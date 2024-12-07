@@ -73,10 +73,26 @@ class LibraryController extends Controller
     }
 
     // get all  library data without officer show all officer data
-    public function getAllLibraries()
+    public function getAllLibraries(Request $request)
     {
-        $libraries = Library::select('id', 'employee_id', 'date', 'library_Name', 'owner_name', 'contact_number', 'detail_address')->paginate(5);
-        $entryCount = $libraries->count();
+        // Get filter parameters from the request
+        $employeeId = $request->input('employee_id');
+        $date = $request->input('date');
+
+        // Build the query with optional filters
+        $query = Library::query();
+
+        if ($employeeId) {
+            $query->where('employee_id', $employeeId);
+        }
+
+        if ($date) {
+            $query->whereDate('date', $date);
+        }
+
+        // Get paginated results
+        $libraries = $query->select('id', 'employee_id', 'date', 'library_Name', 'owner_name', 'contact_number', 'detail_address')->paginate(10);
+        $entryCount = $libraries->total(); // Total number of entries across all pages
 
         if ($libraries->isEmpty()) {
             return response()->json([
@@ -87,7 +103,7 @@ class LibraryController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'All libraries retrieved successfully',
+            'message' => 'Libraries retrieved successfully',
             'count' => $entryCount,
             'data' => $libraries,
         ], 200);

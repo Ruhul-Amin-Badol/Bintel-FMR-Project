@@ -188,6 +188,7 @@
 
                                 <div class="text-end">
                                     <button type="submit" class="btn btn-primary">Update Library</button>
+                                    <button type="button" class="btn btn-secondary" onclick="window.history.back();">Cancel</button>
                                 </div>
                             </form>
                         </div>

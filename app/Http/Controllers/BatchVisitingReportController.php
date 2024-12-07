@@ -75,6 +75,7 @@ class BatchVisitingReportController extends Controller
 
             <a class="me-2 delete-btn" href="' . route("batch.visiting.destroy", encrypt($batch->id)) . '">
                 <img src="' . asset('resources/assets/img/icons/delete.svg') . '" alt="img">
+                
             </a>
         ';
 

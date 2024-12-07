@@ -43,9 +43,21 @@ class InstitutionController extends Controller
      * Get all institutions .
      */
 
-    public function getAllInstitutions()
+    public function getAllInstitutions(Request $request)
     {
-        $institutions = Institution::select(
+    $employeeId = $request->input('employee_id');
+    $date = $request->input('date');
+
+    $query = Institution::query();
+
+    if ($employeeId) {
+        $query->where('employee_id', $employeeId);
+    }
+
+    if ($date) {
+        $query->whereDate('date', $date);
+    }
+        $institutions = $query->select(
             'id',
             'employee_id',
             'date',
@@ -54,7 +66,7 @@ class InstitutionController extends Controller
             'teachers_name',
             'contact_number',
             'detail_address'
-        )->paginate(100);
+        )->paginate(10);
 
         $entryCount = $institutions->count();
 

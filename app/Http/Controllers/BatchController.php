@@ -37,9 +37,22 @@ class BatchController extends Controller
      * Get all batches .
      */
 
-    public function getAllBatches()
+    public function getAllBatches(Request $request)
     {
-        $batches = Batch::select('id', 'employee_id', 'date', 'batch_name', 'owner_name', 'contact_number', 'detail_address')->paginate(100);
+        $employeeId = $request->input('employee_id');
+        $date = $request->input('date');
+
+        $query = Batch::query();
+
+        if ($employeeId) {
+            $query->where('employee_id', $employeeId);
+        }
+
+        if ($date) {
+            $query->whereDate('date', $date);
+        }
+
+        $batches =  $query->select('id', 'employee_id', 'date', 'batch_name', 'owner_name', 'contact_number', 'detail_address')->paginate(10);
 
         $entryCount = $batches->count();
 
