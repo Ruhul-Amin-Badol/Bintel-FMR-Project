@@ -45,7 +45,7 @@
                         </ul>
                     </div>
                 </div>
-
+                    <!-- Filter start -->
                 <div class="card " id="filter_inputs">
                     <div class="card-body pb-0">
                         <form method="GET" action="">
@@ -59,19 +59,59 @@
                                     </div>
                                 </div>
 
-                                <!-- Employee ID Input -->
+                                <!-- Employee ID Input select -->
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <label class="fw-bold" for="employee_id">Employee ID</label>
-                                        <input type="text" class="form-control" name="employee_id" id="employee_id"
-                                            value="{{ request('employee_id') }}" placeholder="Enter Employee ID">
+                                        <label class="fw-bold" for="employee_id">Employee Name / ID</label>
+                                        <select name="employee_id" id="employee_id" class="form-control select234">
+                                            <option selected value="">Select Employee Name/ID </option>
+                                            @foreach ($officers as $officer)
+                                                <option value="{{ $officer->employee_id }}">
+                                                    {{ $officer->name }} ({{ $officer->employee_id }})
+                                                </option>
+                                            @endforeach
+                                        </select>              
                                     </div>
                                 </div>
 
-                                <!-- Filter Button -->
-                                <div class="col-md-2 text-center filter">
-                                    <button type="submit" class="btn btn-primary "><i class="fa-solid fa-filter"></i>
-                                        Filter</button>
+                                <!-- Division -->
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="fw-bold" for="division_id">Division</label>
+                                        <select class="form-control select234" name="division_id" id="division_id">
+                                            <option value="">Select Division</option>
+                                            @foreach ($divisions as $division)
+                                                <option value="{{ $division->division_id }}">{{ $division->division_name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- District -->
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="fw-bold" for="district_id">District</label>
+                                        <select class="form-control select234" name="district_id" id="district_id">
+                                            <option value="">Select District</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Upazila -->
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="fw-bold" for="upazila_id">Upazila</label>
+                                        <select class="form-control select234" name="upazila_id" id="upazila_id">
+                                            <option value="">Select Upazila</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                       
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-primary" id="applyFilters"><i class="fa-solid fa-filter"></i> Apply Filters</button>
+                                    <button type="button" class="btn btn-secondary" id="resetFilters"><i class="fa-solid fa-rotate-right"></i> Reset</button>
                                 </div>
                             </div>
                         </form>
@@ -121,55 +161,96 @@
     <script>
         var AJAX_URL = '{{ route('institution.visiting.ajax') }}';
 
+        $(document).ready(function() {
 
-// Apply Filters
-function applyFilters() {
-   var filters = {
-       date_range: $("#daterange").val(),
-       employee_id: $("#employee_id").val()
-   };
-   updateDataTable(filters);
-}
+// Date Range Picker
+    $('#daterange').daterangepicker({
+        opens: 'right',
+        autoUpdateInput: false,
+        locale: {
+            cancelLabel: 'Clear'
+        }
+    });
 
-// Update DataTable with Filters
-function updateDataTable(filters) {
-   var dataTable = $('.datanewAjax').DataTable();
-   var queryString = $.param(filters);
-   var url = AJAX_URL + "?" + queryString;
-   dataTable.ajax.url(url).load();
-}
+    $('#daterange').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+    });
 
-// Reset Filters
-function resetFilters() {
-   $("#daterange").val('');
-   $("#employee_id").val('');
-   applyFilters();
-}
+    $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
 
-$(document).ready(function() {
+    // Apply Filters
+    $("#applyFilters").on("click", function(e) {
+        e.preventDefault();
 
-   // Date Range Picker
-   $('#daterange').daterangepicker({
-       opens: 'right',
-       autoUpdateInput: false,
-       locale: {
-           cancelLabel: 'Clear'
-       }
-   });
+        // Gather filters
+        var filters = {
+            date_range: $("#daterange").val(),
+            employee_id: $("#employee_id").val(),
+            division_id: $("#division_id").val(),
+            district_id: $("#district_id").val(),
+            upazila_id: $("#upazila_id").val(),
+        };
 
-   $('#daterange').on('apply.daterangepicker', function(ev, picker) {
-       $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
-   });
+        // Update DataTable with new filters
+        var queryString = $.param(filters);
+        var dataTable = $('.datanewAjax').DataTable();
+        var url = AJAX_URL + "?" + queryString;
+        dataTable.ajax.url(url).load();
+    });
 
-   $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
-       $(this).val('');
-   });
+    // Reset Filters
+    $("#resetFilters").on("click", function() {
+        $("#daterange").val("");
+        $("#employee_id").val("");
+        $("#division_id").val("");
+        $("#district_id").val("").change(); 
+        $("#upazila_id").val("");
 
-   // Trigger filter on button click
-   $(".filter button").on('click', function(e) {
-       e.preventDefault();
-       applyFilters();
-   });
+        // Reload DataTable without filters
+        var dataTable = $('.datanewAjax').DataTable();
+        dataTable.ajax.url(AJAX_URL).load();
+    });
+
+    // Dynamic District and Upazila Loading
+    $('#division_id').on('change', function() {
+        var divisionId = $(this).val();
+        $.ajax({
+            url: '{{ route('get.districts') }}', // Route to fetch districts
+            method: 'GET',
+            data: {
+                division_id: divisionId
+            },
+            success: function(data) {
+                $('#district_id').html('<option value="">Select District</option>');
+                data.forEach(function(district) {
+                    $('#district_id').append('<option value="' + district.district_id +
+                        '">' + district.district_name + '</option>');
+                });
+            }
+        });
+    });
+
+    $('#district_id').on('change', function() {
+        var districtId = $(this).val();
+        $.ajax({
+            url: '{{ route('get.upazilas') }}', // Route to fetch upazilas
+            method: 'GET',
+            data: {
+                district_id: districtId
+            },
+            success: function(data) {
+                $('#upazila_id').html('<option value="">Select Upazila</option>');
+                data.forEach(function(upazila) {
+                    $('#upazila_id').append('<option value="' + upazila.upazila_id +
+                        '">' + upazila.upazila_name + '</option>');
+                });
+            }
+        });
+    });
+
+    $(".select234").select2();
 });
     </script>
 @endsection

@@ -8,6 +8,7 @@ use App\Models\Institution;
 use App\Models\InstitutionCategory;
 use App\Models\InstitutionClass;
 use App\Models\InstitutionGroup;
+use App\Models\Officer;
 use App\Models\Upazila;
 use Illuminate\Http\Request;
 
@@ -18,7 +19,9 @@ class InstitutionVisitingReportController extends Controller
      */
     public function index(Request $request)
     {
-        return view('dashboard.layouts.institution_visiting_report.index');
+        $divisions = Division::all();
+        $officers = Officer::all();
+        return view('dashboard.layouts.institution_visiting_report.index', compact('divisions', 'officers'));
     }
 
     /**
@@ -30,7 +33,7 @@ class InstitutionVisitingReportController extends Controller
         $start = $request->start ?? 0;
         $length = $request->length ?? 0;
 
-        $query = Institution::with(['divisionData', 'district', 'upazila']);
+        $query = Institution::with(['divisionData', 'district', 'upazila', 'officer']);
         // Filtering logic
         if ($request->date_range) {
             $dates = explode(' - ', $request->date_range);
@@ -41,6 +44,18 @@ class InstitutionVisitingReportController extends Controller
 
         if ($request->employee_id) {
             $query->where('employee_id', 'like', '%' . $request->employee_id . '%');
+        }
+
+        if ($request->division_id) {
+            $query->where('division', $request->division_id);
+        }
+
+        if ($request->district_id) {
+            $query->where('zilla', $request->district_id);
+        }
+
+        if ($request->upazila_id) {
+            $query->where('upazilla', $request->upazila_id);
         }
 
         $totalRecords = $query->count();

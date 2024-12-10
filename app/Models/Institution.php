@@ -27,39 +27,43 @@ class Institution extends Model
         'teachers_comment',
         'senior_sales_executive_comments',
         'created_by',
-        'updated_by'
-        
+        'updated_by',
+
     ];
 
     public function divisionData()
     {
-        return $this->belongsTo(Division::class,'division','division_id');
+        return $this->belongsTo(Division::class, 'division', 'division_id');
     }
 
     public function district()
     {
-        return $this->belongsTo(District::class,'zilla','district_id');
+        return $this->belongsTo(District::class, 'zilla', 'district_id');
     }
 
     public function upazila()
     {
-        return $this->belongsTo(Upazila::class,'upazilla','upazila_id');
+        return $this->belongsTo(Upazila::class, 'upazilla', 'upazila_id');
     }
-     // Relationship with InstitutionCategory
-     public function categories()
-     {
-         return $this->hasMany(InstitutionCategory::class, 'institution_id', 'id');
-     }
- 
-     // Relationship with InstitutionClass
-     public function classes()
-     {
-         return $this->hasMany(InstitutionClass::class, 'institution_id', 'id');
-     }
- 
-     // Relationship with InstitutionGroup
-     public function groups()
-     {
-         return $this->hasMany(InstitutionGroup::class, 'institution_id', 'id');
-     }
+    // Relationship with InstitutionCategory
+    public function categories()
+    {
+        return $this->hasMany(InstitutionCategory::class, 'institution_id', 'id');
+    }
+
+    // Relationship with InstitutionClass
+    public function classes()
+    {
+        return $this->hasMany(InstitutionClass::class, 'institution_id', 'id');
+    }
+
+    // Relationship with InstitutionGroup
+    public function groups()
+    {
+        return $this->hasMany(InstitutionGroup::class, 'institution_id', 'id');
+    }
+    public function officer()
+    {
+        return $this->belongsTo(Officer::class, 'employee_id', 'employee_id');
+    }
 }

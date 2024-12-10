@@ -71,7 +71,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="division">Division</label>
-                                        <select name="division" id="division" class="form-control" required>
+                                        <select name="division" id="division" class="form-control select213" required>
                                             <option value="">Select Division</option>
                                             @foreach ($divisions as $division)
                                                 <option value="{{ $division->division_id }}"
@@ -86,7 +86,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="zilla">District</label>
-                                        <select name="zilla" id="zilla" class="form-control" required>
+                                        <select name="zilla" id="zilla" class="form-control select213" required>
                                             <option value="">Select District</option>
                                             @foreach ($districts as $district)
                                                 <option value="{{ $district->district_id }}"
@@ -101,7 +101,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="upazilla">Upazila</label>
-                                        <select name="upazilla" id="upazilla" class="form-control" required>
+                                        <select name="upazilla" id="upazilla" class="form-control select213" required>
                                             <option value="">Select Upazila</option>
                                             @foreach ($upazilas as $upazila)
                                                 <option value="{{ $upazila->upazila_id }}"
@@ -193,8 +193,8 @@
                             </div>
 
                             <div class="text-end">
+                                <button type="button" class="btn btn-secondary" onclick="window.history.back();"><i class="fa-solid fa-arrow-left-long"></i> Cancel</button>
                                 <button type="submit" class="btn btn-primary">Update Batch</button>
-                                <button type="button" class="btn btn-secondary" onclick="window.history.back();">Cancel</button>
                             </div>
                         </form>
                     </div>
@@ -256,6 +256,11 @@
                 }
             });
         }
+    });
+
+    $(document).ready(function() {
+
+        $(".select213").select2();
     });
 </script>
 @endsection

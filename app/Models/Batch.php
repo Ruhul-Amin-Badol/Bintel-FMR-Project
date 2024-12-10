@@ -60,5 +60,9 @@ class Batch extends Model
     {
         return $this->belongsTo(Upazila::class, 'upazilla', 'upazila_id');
     }
+    public function officer()
+    {
+        return $this->belongsTo(Officer::class, 'employee_id', 'employee_id');
+    }
 
 }

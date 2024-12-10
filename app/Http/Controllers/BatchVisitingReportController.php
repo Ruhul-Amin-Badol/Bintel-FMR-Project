@@ -8,6 +8,7 @@ use App\Models\BatchCourse;
 use App\Models\District;
 use App\Models\Division;
 use App\Models\Upazila;
+use App\Models\Officer;
 use Illuminate\Http\Request;
 
 class BatchVisitingReportController extends Controller
@@ -17,7 +18,9 @@ class BatchVisitingReportController extends Controller
      */
     public function index(Request $request)
     {
-        return view('dashboard.layouts.batch_visiting_report.batch_visiting_report_list');
+        $divisions = Division::all();
+        $officers=Officer::all();
+        return view('dashboard.layouts.batch_visiting_report.batch_visiting_report_list',compact('divisions','officers'));
     }
 
     //ajax datatable function
@@ -27,7 +30,7 @@ class BatchVisitingReportController extends Controller
         $start = $request->start ?? 0;
         $length = $request->length ?? 0;
 
-        $query = Batch::with(['divisionData', 'district', 'upazila']);
+        $query = Batch::with(['divisionData', 'district', 'upazila', 'officer']);
         // Filtering logic
         if ($request->date_range) {
             $dates = explode(' - ', $request->date_range);
@@ -39,6 +42,18 @@ class BatchVisitingReportController extends Controller
         if ($request->employee_id) {
             $query->where('employee_id', 'like', '%' . $request->employee_id . '%');
         }
+        if ($request->division_id) {
+            $query->where('division', $request->division_id);
+        }
+
+        if ($request->district_id) {
+            $query->where('zilla', $request->district_id);
+        }
+
+        if ($request->upazila_id) {
+            $query->where('upazilla', $request->upazila_id);
+        }
+
 
         $totalRecords = $query->count();
         $batches = $query->orderBy('created_at', 'desc')

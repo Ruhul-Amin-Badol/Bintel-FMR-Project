@@ -7,6 +7,7 @@ use App\Models\Division;
 use App\Models\Library;
 use App\Models\LibraryCategory;
 use App\Models\LibraryType;
+use App\Models\Officer;
 use App\Models\Upazila;
 use Illuminate\Http\Request;
 
@@ -17,18 +18,20 @@ class LibraryVisitingReportController extends Controller
 
     public function index()
     {
+        $divisions = Division::all();
+        $officers = Officer::all();
 
-        return view('dashboard.layouts.library_visiting_report.library_visiting_report_list');
+        return view('dashboard.layouts.library_visiting_report.library_visiting_report_list', compact('divisions', 'officers'));
     }
 
     public function libraryList(Request $request)
     {
-
         $draw = $request->draw ?? 0;
         $start = $request->start ?? 0;
-        $length = $request->length ?? 0;
+        $length = $request->length ?? 10;
 
-        $query = Library::with(['divisionData', 'district', 'upazila']);
+        $query = Library::with(['divisionData', 'district', 'upazila', 'officer']);
+
         // Filtering logic
         if ($request->date_range) {
             $dates = explode(' - ', $request->date_range);
@@ -41,6 +44,18 @@ class LibraryVisitingReportController extends Controller
             $query->where('employee_id', 'like', '%' . $request->employee_id . '%');
         }
 
+        if ($request->division_id) {
+            $query->where('division', $request->division_id);
+        }
+
+        if ($request->district_id) {
+            $query->where('zilla', $request->district_id);
+        }
+
+        if ($request->upazila_id) {
+            $query->where('upazilla', $request->upazila_id);
+        }
+
         $totalRecords = $query->count();
         $libraries = $query->orderBy('created_at', 'desc')
             ->skip($start)
@@ -50,29 +65,27 @@ class LibraryVisitingReportController extends Controller
         // Prepare data for DataTables
         $data = [];
         foreach ($libraries as $key => $library) {
-            // Concatenate the required fields
             $DetailsAddress = implode('<br>', array_filter([
                 'Address: ' . ($library->detail_address ?? 'N/A'),
                 'Division: ' . ($library->divisionData->division_name ?? 'N/A'),
                 'District: ' . ($library->district->district_name ?? 'N/A'),
                 'Upazila: ' . ($library->upazila->upazila_name ?? 'N/A'),
                 'Union: ' . ($library->union_name ?? 'N/A'),
-                'Are Name: ' . ($library->area_name ?? 'N/A'),
+                'Area Name: ' . ($library->area_name ?? 'N/A'),
             ]));
             $AllComment = implode('<br>', array_filter([
                 'Librarian Comments: ' . ($library->librarian_comments ?? 'N/A'),
                 'Senior Sales Executive Comments: ' . ($library->senior_sales_executive_comments ?? 'N/A'),
             ]));
 
-            // Add action buttons
             $actionButtons = '
-                <a class="me-3" href="' . route('library.visiting-list.edit', encrypt($library->id)) . '">
-                <img src="' . asset('resources/assets/img/icons/edit.svg') . '" alt="img"></a>
-
-                <a class="me-3 delete-btn" href="' . route("library.visiting-list.destroy", encrypt($library->id)) . '">
-                        <img src="' . asset('resources/assets/img/icons/delete.svg') . '" alt="img">
-                    </a>
-                ';
+            <a class="me-3" href="' . route('library.visiting-list.edit', encrypt($library->id)) . '">
+                <img src="' . asset('resources/assets/img/icons/edit.svg') . '" alt="Edit">
+            </a>
+            <a class="me-3 delete-btn" href="' . route('library.visiting-list.destroy', encrypt($library->id)) . '">
+                <img src="' . asset('resources/assets/img/icons/delete.svg') . '" alt="Delete">
+            </a>
+        ';
 
             $data[] = [
                 $key + 1,

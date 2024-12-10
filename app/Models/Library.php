@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Division;
 use App\Models\LibraryCategory;
 use App\Models\LibraryType;
-use App\Models\Division;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Library extends Model
 {
@@ -28,23 +27,23 @@ class Library extends Model
         'librarian_comments',
         'senior_sales_executive_comments',
         'created_by',
-        'updated_by'
-        
+        'updated_by',
+
     ];
 
     public function divisionData()
     {
-        return $this->belongsTo(Division::class,'division','division_id');
+        return $this->belongsTo(Division::class, 'division', 'division_id');
     }
 
     public function district()
     {
-        return $this->belongsTo(District::class,'zilla','district_id');
+        return $this->belongsTo(District::class, 'zilla', 'district_id');
     }
 
     public function upazila()
     {
-        return $this->belongsTo(Upazila::class,'upazilla','upazila_id');
+        return $this->belongsTo(Upazila::class, 'upazilla', 'upazila_id');
     }
 
     public function categories()
@@ -55,5 +54,10 @@ class Library extends Model
     public function types()
     {
         return $this->hasMany(LibraryType::class, 'library_id');
+    }
+
+    public function officer()
+    {
+        return $this->belongsTo(Officer::class, 'employee_id', 'employee_id');
     }
 }
