@@ -141,7 +141,7 @@
                                 <div class="form-group">
                                     <label for="categories" class="fw-bold">Categories</label><br>
                                     @php
-                                        $categories = ['Collaborator', 'Dedicated', 'Non-Cooperative', 'Normal'];
+                                        $categories = ['Collaborator', 'Dedicated', 'Non-Cooperative', 'Normal','N/A'];
                                     @endphp
                                     @foreach ($categories as $category)
                                         <div class="form-check form-check-inline">
@@ -156,7 +156,7 @@
                                 <div class="form-group">
                                     <label for="types" class="fw-bold">Library Types</label><br>
                                     @php
-                                        $types = ['Agent', 'Wholesale', 'Retail', 'Local'];
+                                        $types = ['Agent', 'Wholesale', 'Retail', 'Local','N/A'];
                                     @endphp
                                     @foreach ($types as $type)
                                         <div class="form-check form-check-inline">

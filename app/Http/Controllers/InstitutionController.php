@@ -48,7 +48,7 @@ class InstitutionController extends Controller
     $employeeId = $request->input('employee_id');
     $date = $request->input('date');
 
-    $query = Institution::query();
+    $query = Institution::query() ->with(['categories', 'classes', 'groups']);
 
     if ($employeeId) {
         $query->where('employee_id', $employeeId);
@@ -57,16 +57,7 @@ class InstitutionController extends Controller
     if ($date) {
         $query->whereDate('date', $date);
     }
-        $institutions = $query->select(
-            'id',
-            'employee_id',
-            'date',
-            'institution_name',
-            'designation',
-            'teachers_name',
-            'contact_number',
-            'detail_address'
-        )->paginate(10);
+        $institutions = $query->paginate(10);
 
         $entryCount = $institutions->count();
 

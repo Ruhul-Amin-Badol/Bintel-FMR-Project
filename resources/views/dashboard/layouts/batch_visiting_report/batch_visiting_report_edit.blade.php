@@ -135,7 +135,7 @@
                             <div class="form-group">
                                 <label for="categories">Categories</label>
                                 @php
-                                    $categories = ['Collaborator', 'Dedicated', 'Non-Cooperative', 'Normal'];
+                                    $categories = ['Collaborator', 'Dedicated', 'Non-Cooperative', 'Normal','N/A'];
                                 @endphp
                                 @foreach ($categories as $category)
                                     <div class="form-check form-check-inline">
@@ -151,7 +151,7 @@
                             <div class="form-group">
                                 <label for="courses">Courses</label>
                                 @php
-                                    $courses = ['VII', 'SSC', 'HSC','Admission','Job'];
+                                    $courses = ['VII', 'SSC', 'HSC','Admission','Job','N/A'];
                                 @endphp
                                 @foreach ($courses as $course)
                                     <div class="form-check form-check-inline">

@@ -145,7 +145,7 @@
                                 <!-- Class -->
                                 <div class="form-group">
                                     <label for="class">Class</label>
-                                    @foreach (['K.G' => 'K.G (কে.জি স্কুল)','Primary' => 'Primary(প্রাথমিক)', 'VI-VIII' => 'VI-VIII (নিম্ন মাধ্যমিক)', 'VI-X' => 'VI-X (মাধ্যমিক)', 'VI-XII' => 'VI-XII (স্কুল এন্ড কলেজ)', 'XI-XII' => 'XI-XII (কলেজ)'] as $classValue => $classLabel)
+                                    @foreach (['K.G' => 'K.G (কে.জি স্কুল)','Primary' => 'Primary(প্রাথমিক)', 'VI-VIII' => 'VI-VIII (নিম্ন মাধ্যমিক)', 'VI-X' => 'VI-X (মাধ্যমিক)', 'VI-XII' => 'VI-XII (স্কুল এন্ড কলেজ)', 'XI-XII' => 'XI-XII (কলেজ)','N/A' => 'N/A'] as $classValue => $classLabel)
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" name="classes[]" class="form-check-input"
                                                 value="{{ $classValue }}"
@@ -157,7 +157,7 @@
                                 <!-- group -->
                                 <div class="form-group">
                                     <label for="categories">Group</label>
-                                    @foreach (['Science', 'Arts', 'Commerce'] as $group)
+                                    @foreach (['Science', 'Arts', 'Commerce','N/A'] as $group)
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" name="groups[]" class="form-check-input"
                                                 value="{{ $group }}"
@@ -169,7 +169,7 @@
                                 <!-- Categories -->
                                 <div class="form-group">
                                     <label for="categories">Category</label>
-                                    @foreach (['Famouse', 'Average', 'Normal'] as $category)
+                                    @foreach (['Famouse', 'Average', 'Normal','N/A'] as $category)
                                         <div class="form-check form-check-inline">
                                             <input type="checkbox" name="categories[]" class="form-check-input"
                                                 value="{{ $category }}"

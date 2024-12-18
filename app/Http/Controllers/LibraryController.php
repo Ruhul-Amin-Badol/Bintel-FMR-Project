@@ -80,7 +80,8 @@ class LibraryController extends Controller
         $date = $request->input('date');
 
         // Build the query with optional filters
-        $query = Library::query();
+        $query  = Library::query()
+            ->with(['categories', 'types', 'divisionData', 'district', 'upazila']);
 
         if ($employeeId) {
             $query->where('employee_id', $employeeId);
@@ -91,7 +92,7 @@ class LibraryController extends Controller
         }
 
         // Get paginated results
-        $libraries = $query->select('id', 'employee_id', 'date', 'library_Name', 'owner_name', 'contact_number', 'detail_address')->paginate(10);
+        $libraries = $query->paginate(10);
         $entryCount = $libraries->total(); // Total number of entries across all pages
 
         if ($libraries->isEmpty()) {
